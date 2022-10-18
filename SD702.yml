@@ -1,0 +1,31 @@
+---
+- name: Configuration con can Canopen
+  hosts: bet
+  tasks:
+    - name: Copy PiCtory configuration
+      become: yes
+      copy:
+        src: ./files/_config.rsc
+        dest: /var/www/revpi/pictory/projects/_config.rsc
+
+    - name: Reset Driver
+      become: yes
+      command: piTest -x
+
+    - name: "PiTest show all devices #1"
+      become: yes
+      command: piTest -d
+      register: out
+    - debug:
+         var: out.stdout_lines
+
+    - name: Reboot
+      become: yes
+      reboot:
+
+    - name: "PiTest show all devices #2"
+      become: yes
+      command: piTest -d
+      register: out
+    - debug:
+        var: out.stdout_lines
